@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stoppuhr</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Helles Farbschema */
+            --bg-color: #f3f4f6;
+            --primary-color: #22c55e;
+            --primary-color-darker: #16a34a;
+            --secondary-color: #e5e7eb;
+            --secondary-color-darker: #d1d5db;
+            --text-light: #1f2937;
+            --text-dark: #6b7280;
+            --border-color: #d1d5db;
+            --container-bg: #ffffff;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-light);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .stopwatch-container {
+            width: 100%;
+            max-width: 420px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .time-display-wrapper {
+            width: 380px;
+            height: 239px;
+            border-radius: 2rem;
+            background-color: var(--container-bg);
+            box-shadow: 0 0 0 4px var(--border-color), 
+                        inset 0 2px 10px rgba(0,0,0,0.05), 
+                        0 10px 20px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+
+        .time-display {
+            display: flex;
+            align-items: flex-end;
+            gap: 0.1rem;
+        }
+
+        .time-display.is-running .time-value,
+        .time-display.is-running .time-separator {
+            color: var(--primary-color);
+        }
+
+        .time-segment {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .time-label {
+            font-size: 0.8rem;
+            color: var(--text-dark);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .time-value {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 2rem;
+            font-weight: 500;
+            color: var(--text-light);
+            letter-spacing: 1px;
+            line-height: 1;
+        }
+        
+        .time-separator {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 2rem;
+            font-weight: 500;
+            color: var(--text-light);
+            padding: 0 0.1rem;
+            position: relative;
+            top: 0.2em;
+        }
+        
+        .start-time-display {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1rem;
+            color: var(--text-dark);
+            position: absolute;
+            top: 1.5rem;
+            white-space: nowrap;
+        }
+
+        .button-group {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        .btn {
+            width: 80px;
+            height: 50px;
+            border-radius: 1rem;
+            border: none;
+            background-color: var(--secondary-color);
+            color: var(--text-light);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: inset 0 -4px 8px rgba(0,0,0,0.05), 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            background-color: var(--secondary-color-darker);
+            box-shadow: inset 0 -4px 8px rgba(0,0,0,0.05), 0 6px 12px rgba(0,0,0,0.15);
+        }
+        
+        .btn:active {
+            transform: translateY(1px);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .btn-adaptive {
+            width: auto;
+            padding: 0 1.5rem;
+        }
+
+        .btn-start {
+            background-color: var(--primary-color);
+            color: #ffffff;
+        }
+        .btn-start:hover {
+             background-color: var(--primary-color-darker);
+        }
+
+        .btn-stop {
+            background-color: #e11d48;
+            color: #ffffff;
+        }
+        .btn-stop:hover {
+            background-color: #be123c;
+        }
+        
+        #lap-container-wrapper {
+            width: 380px;
+        }
+
+        .lap-list-container {
+            width: 100%;
+            max-height: 272px;
+            overflow-y: auto;
+            background-color: var(--container-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 0.5rem;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .lap-list-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        .lap-list-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .lap-list-container::-webkit-scrollbar-thumb {
+            background-color: var(--secondary-color);
+            border-radius: 20px;
+        }
+
+        .lap-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.25rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .lap-item:last-child {
+            border-bottom: none;
+        }
+        
+        .lap-label {
+            color: var(--text-dark);
+            font-size: 0.9rem;
+            font-family: 'Roboto Mono', monospace;
+        }
+        
+        .lap-time-display {
+            display: flex;
+            align-items: flex-end;
+            gap: 0.2rem;
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        .lap-time-segment {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .lap-time-label {
+            font-size: 0.6rem;
+            color: var(--text-dark);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .lap-time-value {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            line-height: 1;
+        }
+
+        .lap-time-separator {
+            font-size: 0.9rem;
+            position: relative;
+            top: 0.2em;
+        }
+
+        @media (max-width: 480px) {
+            .stopwatch-container {
+                max-width: 100%;
+                gap: 1.5rem;
+            }
+
+            .time-display-wrapper {
+                width: 80vw;
+                height: 50vw;
+            }
+
+            .main-content {
+                gap: 1.5rem;
+                margin-top: 2.5rem;
+            }
+
+            .time-value, .time-separator {
+                font-size: 1.2rem;
+            }
+            
+            .time-label {
+                font-size: 0.7rem;
+            }
+
+            .start-time-display {
+                font-size: 0.7rem;
+                top: 1rem;
+            }
+
+            .btn {
+                width: 70px;
+                height: 40px;
+                font-size: 0.9rem;
+            }
+            
+            .btn-adaptive {
+                width: auto;
+                padding: 0 1rem;
+            }
+
+            .button-group {
+                gap: 1.5rem;
+            }
+
+            #lap-container-wrapper {
+                width: 80vw;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="stopwatch-container">
+        <div class="time-display-wrapper">
+            <div id="start-time-display" class="start-time-display">Start: -</div>
+            <div class="main-content">
+                <div id="time-display" class="time-display">
+                    <div class="time-segment">
+                        <span class="time-label">TT</span>
+                        <span id="days-val" class="time-value">00</span>
+                    </div>
+                    <span class="time-separator">:</span>
+                    <div class="time-segment">
+                        <span class="time-label">HH</span>
+                        <span id="hours-val" class="time-value">00</span>
+                    </div>
+                    <span class="time-separator">:</span>
+                    <div class="time-segment">
+                        <span class="time-label">MM</span>
+                        <span id="minutes-val" class="time-value">00</span>
+                    </div>
+                    <span class="time-separator">:</span>
+                    <div class="time-segment">
+                        <span class="time-label">SS</span>
+                        <span id="seconds-val" class="time-value">00</span>
+                    </div>
+                     <span class="time-separator">:</span>
+                    <div class="time-segment">
+                        <span class="time-label">1/100s</span>
+                        <span id="ms-val" class="time-value">00</span>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button id="lap-reset-btn" class="btn btn-adaptive">Reset</button>
+                    <button id="start-stop-btn" class="btn btn-start">Start</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="lap-container-wrapper">
+            <div class="lap-list-container">
+                <ul id="lap-list">
+                    </ul>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const timeDisplayContainer = document.getElementById('time-display');
+        const daysVal = document.getElementById('days-val');
+        const hoursVal = document.getElementById('hours-val');
+        const minutesVal = document.getElementById('minutes-val');
+        const secondsVal = document.getElementById('seconds-val');
+        const msVal = document.getElementById('ms-val');
+        const startTimeDisplay = document.getElementById('start-time-display');
+        const startStopBtn = document.getElementById('start-stop-btn');
+        const lapResetBtn = document.getElementById('lap-reset-btn');
+        const lapList = document.getElementById('lap-list');
+        const lapContainerWrapper = document.getElementById('lap-container-wrapper');
+
+        let localState = {
+            isRunning: false,
+            startTime: 0,
+            totalTimeAtPause: 0,
+            lapTimestamps: [],
+            laps: [],
+        };
+
+        let timerInterval;
+        const STATE_KEY = 'stopwatch_state_new';
+
+        // Helper Functions
+        const formatDuration = (timeInMs) => {
+            const days = String(Math.floor(timeInMs / (1000 * 60 * 60 * 24))).padStart(2, '0');
+            const hours = String(Math.floor((timeInMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
+            const minutes = String(Math.floor((timeInMs % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+            const seconds = String(Math.floor((timeInMs % (1000 * 60)) / 1000)).padStart(2, '0');
+            const milliseconds = String(Math.floor((timeInMs % 1000) / 10)).padStart(2, '0');
+            return { days, hours, minutes, seconds, milliseconds };
+        };
+
+        const saveState = () => {
+            try {
+                localStorage.setItem(STATE_KEY, JSON.stringify(localState));
+            } catch (error) {
+                console.error("Fehler beim Speichern im localStorage:", error);
+            }
+        };
+
+        const loadState = () => {
+            try {
+                const savedState = localStorage.getItem(STATE_KEY);
+                if (savedState) {
+                    localState = JSON.parse(savedState);
+                }
+            } catch (error) {
+                console.error("Fehler beim Laden aus dem localStorage:", error);
+            }
+        };
+
+        const renderLaps = (laps) => {
+             lapContainerWrapper.style.display = laps.length > 0 ? 'block' : 'none';
+             lapList.innerHTML = '';
+             laps.slice().reverse().forEach((lap, index) => {
+                 const lapItem = document.createElement('li');
+                 lapItem.className = 'lap-item';
+                 lapItem.innerHTML = `
+                    <span class="lap-label">Runde ${laps.length - index}</span>
+                    <div class="lap-time-display">
+                        <div class="lap-time-segment">
+                            <span class="lap-time-label">TT</span>
+                            <span class="lap-time-value">${lap.days}</span>
+                        </div>
+                        <span class="lap-time-separator">:</span>
+                        <div class="lap-time-segment">
+                            <span class="lap-time-label">HH</span>
+                            <span class="lap-time-value">${lap.hours}</span>
+                        </div>
+                        <span class="lap-time-separator">:</span>
+                        <div class="lap-time-segment">
+                            <span class="lap-time-label">MM</span>
+                            <span class="lap-time-value">${lap.minutes}</span>
+                        </div>
+                        <span class="lap-time-separator">:</span>
+                        <div class="lap-time-segment">
+                            <span class="lap-time-label">SS</span>
+                            <span class="lap-time-value">${lap.seconds}</span>
+                        </div>
+                        <span class="lap-time-separator">:</span>
+                        <div class="lap-time-segment">
+                             <span class="lap-time-label">1/100s</span>
+                            <span class="lap-time-value">${lap.milliseconds}</span>
+                        </div>
+                    </div>
+                 `;
+                 lapList.appendChild(lapItem);
+             });
+        };
+
+        const updateUI = () => {
+            const totalTime = localState.isRunning 
+                ? Date.now() - localState.startTime 
+                : localState.totalTimeAtPause;
+            
+            const { days, hours, minutes, seconds, milliseconds } = formatDuration(totalTime);
+            daysVal.textContent = days;
+            hoursVal.textContent = hours;
+            minutesVal.textContent = minutes;
+            secondsVal.textContent = seconds;
+            msVal.textContent = milliseconds;
+
+            if (localState.isRunning) {
+                startStopBtn.textContent = 'Stopp';
+                startStopBtn.className = 'btn btn-stop';
+                lapResetBtn.textContent = 'Runde';
+                timeDisplayContainer.classList.add('is-running');
+            } else {
+                startStopBtn.textContent = 'Start';
+                startStopBtn.className = 'btn btn-start';
+                lapResetBtn.textContent = 'Reset';
+                timeDisplayContainer.classList.remove('is-running');
+            }
+
+            startTimeDisplay.textContent = localState.startTime > 0
+                ? `Start: ${new Date(localState.startTime).toLocaleString('de-DE', { year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}`
+                : 'Start: -';
+            
+            renderLaps(localState.laps);
+        };
+
+        // Event Handlers
+        const handleStartStop = () => {
+            localState.isRunning = !localState.isRunning;
+            if (localState.isRunning) {
+                if (localState.totalTimeAtPause > 0) {
+                    localState.startTime = Date.now() - localState.totalTimeAtPause;
+                } else {
+                    localState.startTime = Date.now();
+                }
+                timerInterval = setInterval(updateUI, 10);
+            } else {
+                localState.totalTimeAtPause = Date.now() - localState.startTime;
+                clearInterval(timerInterval);
+            }
+            saveState();
+            updateUI();
+        };
+
+        const handleLapReset = () => {
+            if (localState.isRunning) {
+                const currentTotalTimeMs = Date.now() - localState.startTime;
+                const lastLapTimestamp = localState.lapTimestamps.length > 0
+                    ? localState.lapTimestamps[localState.lapTimestamps.length - 1]
+                    : 0;
+                const lapTimeMs = currentTotalTimeMs - lastLapTimestamp;
+                
+                localState.laps.push(formatDuration(lapTimeMs));
+                localState.lapTimestamps.push(currentTotalTimeMs);
+            } else {
+                localState = { isRunning: false, startTime: 0, totalTimeAtPause: 0, lapTimestamps: [], laps: [] };
+            }
+            saveState();
+            updateUI();
+        };
+
+        // Initialization
+        startStopBtn.addEventListener('click', handleStartStop);
+        lapResetBtn.addEventListener('click', handleLapReset);
+        
+        window.addEventListener('load', () => {
+            loadState();
+            updateUI();
+            if (localState.isRunning) {
+                timerInterval = setInterval(updateUI, 10);
+            }
+        });
+    </script>
+</body>
+</html>
