@@ -245,34 +245,48 @@
         gap: 1rem;
     }
 
-            .time-display-wrapper {
-                width: 95vw;
-                min-height: auto;
-                padding: 1rem 0.5rem;
-            }
+    .time-display-wrapper {
+        /* Breite auf 80% der Bildschirmbreite reduziert */
+        width: 80vw;
+        min-height: auto;
+        padding: 1rem 0.5rem;
+        /* Verhindert, dass Inhalt die Box aufdrückt */
+        overflow: hidden; 
+    }
 
-            .main-content {
-                gap: 0.8rem;
-                margin-top: 0 !important;
-            }
+    .main-content {
+        gap: 0.8rem;
+        margin-top: 0 !important;
+    }
 
-            .time-value, .time-separator {
-                font-size: 1.4rem;
-            }
-            
-            .time-label {
-                font-size: 0.65rem;
-            }
+    .time-display {
+        /* Erlaubt den Zahlen, bei Platzmangel kleiner zu werden */
+        flex-wrap: nowrap;
+        transform: scale(0.9); /* Skaliert die gesamte Zeitanzeige leicht runter */
+    }
 
-            .btn {
-                width: 75px;
-                height: 45px;
-            }
+    .time-value, .time-separator {
+        font-size: 1.15rem; /* Schriftgröße weiter reduziert */
+    }
+    
+    .time-label {
+        font-size: 0.55rem;
+    }
 
-            #lap-container-wrapper {
-                width: 95vw;
-            }
-        }
+    .btn {
+        width: 70px; /* Buttons minimal schmaler */
+        height: 42px;
+        font-size: 0.85rem;
+    }
+
+    .button-group {
+        gap: 1rem; /* Abstand zwischen Buttons verringert */
+    }
+
+    #lap-container-wrapper {
+        width: 80vw;
+    }
+}
     </style>
 </head>
 <body>
@@ -448,4 +462,5 @@
     </script>
 </body>
 </html>
+
 
