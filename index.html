@@ -135,11 +135,9 @@
         
         .start-time-display {
             font-family: 'Roboto Mono', monospace;
-            font-size: 1rem;
+            font-size: 0.9rem;
             color: var(--text-dark);
-            position: absolute;
-            top: 1.5rem;
-            white-space: nowrap;
+             white-space: nowrap;
         }
 
         .button-group {
@@ -281,6 +279,13 @@
             }
 
             .main-content {
+              display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    width: 100%;
+}
+                
                 gap: 1.5rem;
                 margin-top: 2.5rem;
             }
@@ -321,13 +326,17 @@
 </head>
 <body>
 
-    <div class="stopwatch-container">
-        <div class="time-display-wrapper">
-            <h1 class="text-gray-800 text-3xl font-bold mb-6 text-center">Stoppuhr</h1>
-            
-            <div class="main-content">
+    <body>
 
-<div id="start-time-display" class="start-time-display">Start: -</div>
+    <div class="stopwatch-container">
+       
+        
+        <div class="time-display-wrapper">
+            <div class="main-content">
+                
+                <h1 class="text-gray-800 text-3xl font-bold text-center">Stoppuhr</h1>
+                
+                <div id="start-time-display" class="start-time-display">Start: -</div>
                 
                 <div id="time-display" class="time-display">
                     <div class="time-segment">
@@ -349,12 +358,13 @@
                         <span class="time-label">SS</span>
                         <span id="seconds-val" class="time-value">00</span>
                     </div>
-                     <span class="time-separator">:</span>
+                    <span class="time-separator">:</span>
                     <div class="time-segment">
                         <span class="time-label">1/100s</span>
                         <span id="ms-val" class="time-value">00</span>
                     </div>
                 </div>
+
                 <div class="button-group">
                     <button id="lap-reset-btn" class="btn btn-adaptive">Reset</button>
                     <button id="start-stop-btn" class="btn btn-start">Start</button>
@@ -543,6 +553,7 @@
 </body>
 
 </html>
+
 
 
 
