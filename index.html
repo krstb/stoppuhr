@@ -77,7 +77,7 @@
                         0 10px 20px rgba(0,0,0,0.1);
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
             position: relative;
         }
@@ -87,34 +87,34 @@
             flex-direction: column;
             align-items: center;
             gap: 1.5rem;
-            margin-top: 3rem;
+            margin-top: 0rem;
         }
 
-        .time-display {
+        .-display {
             display: flex;
             align-items: flex-end;
             gap: 0.1rem;
         }
 
-        .time-display.is-running .time-value,
-        .time-display.is-running .time-separator {
+        .-display.is-running .-value,
+        .-display.is-running .-separator {
             color: var(--primary-color);
         }
 
-        .time-segment {
+        .-segment {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 0.25rem;
         }
 
-        .time-label {
+        .-label {
             font-size: 0.8rem;
             color: var(--text-dark);
             font-family: 'Inter', sans-serif;
         }
 
-        .time-value {
+        .-value {
             font-family: 'Roboto Mono', monospace;
             font-size: 2rem;
             font-weight: 500;
@@ -123,7 +123,7 @@
             line-height: 1;
         }
         
-        .time-separator {
+        .-separator {
             font-family: 'Roboto Mono', monospace;
             font-size: 2rem;
             font-weight: 500;
@@ -133,7 +133,7 @@
             top: 0.2em;
         }
         
-        .start-time-display {
+        .start--display {
             font-family: 'Roboto Mono', monospace;
             font-size: 0.9rem;
             color: var(--text-dark);
@@ -236,32 +236,32 @@
             font-family: 'Roboto Mono', monospace;
         }
         
-        .lap-time-display {
+        .lap--display {
             display: flex;
             align-items: flex-end;
             gap: 0.2rem;
             font-family: 'Roboto Mono', monospace;
         }
 
-        .lap-time-segment {
+        .lap--segment {
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
-        .lap-time-label {
+        .lap--label {
             font-size: 0.6rem;
             color: var(--text-dark);
             font-family: 'Inter', sans-serif;
         }
 
-        .lap-time-value {
+        .lap--value {
             color: var(--text-light);
             font-size: 0.9rem;
             line-height: 1;
         }
 
-        .lap-time-separator {
+        .lap--separator {
             font-size: 0.9rem;
             position: relative;
             top: 0.2em;
@@ -270,7 +270,7 @@
         @media (max-width: 480px) {
             .stopwatch-container {
                 max-width: 100%;
-                gap: 1.5rem;
+                gap: 0rem;
             }
 
             .time-display-wrapper {
@@ -553,6 +553,7 @@
 </body>
 
 </html>
+
 
 
 
