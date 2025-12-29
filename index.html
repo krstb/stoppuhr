@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stoppuhr</title>
 
-<link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#000000">
     <meta name="color-scheme" content="light">
     <meta name="mobile-web-app-capable" content="yes">
@@ -27,12 +27,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
     <style>
-
         /* Fix für PWA-Ränder */
-    html {background-color: #3289D1 !important;}
+        html {background-color: #3289D1 !important;}
         
         :root {
-            /* Helles Farbschema */
             --bg-color: #3289D1;
             --primary-color: #22c55e;
             --primary-color-darker: #16a34a;
@@ -53,7 +51,7 @@
             justify-content: flex-start;
             align-items: center;
             min-height: 100vh;
-            padding: 2rem 1rem;
+            padding: 1rem; /* Reduziert von 2rem */
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
@@ -64,12 +62,12 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 2rem;
+            gap: 1.5rem;
         }
 
         .time-display-wrapper {
             width: 380px;
-            min-height: 300px;
+            min-height: auto;
             border-radius: 2rem;
             background-color: var(--container-bg);
             box-shadow: 0 0 0 4px var(--border-color), 
@@ -79,42 +77,43 @@
             flex-direction: column;
             justify-content: flex-start;
             align-items: center;
-            position: relative;
+            padding: 1.5rem 1rem;
         }
         
         .main-content {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 1.5rem;
-            margin-top: 0rem;
+            gap: 1.2rem;
+            margin-top: 0;
+            width: 100%;
         }
 
-        .-display {
+        .time-display {
             display: flex;
             align-items: flex-end;
             gap: 0.1rem;
         }
 
-        .-display.is-running .-value,
-        .-display.is-running .-separator {
+        .time-display.is-running .time-value,
+        .time-display.is-running .time-separator {
             color: var(--primary-color);
         }
 
-        .-segment {
+        .time-segment {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 0.25rem;
         }
 
-        .-label {
+        .time-label {
             font-size: 0.8rem;
             color: var(--text-dark);
             font-family: 'Inter', sans-serif;
         }
 
-        .-value {
+        .time-value {
             font-family: 'Roboto Mono', monospace;
             font-size: 2rem;
             font-weight: 500;
@@ -123,7 +122,7 @@
             line-height: 1;
         }
         
-        .-separator {
+        .time-separator {
             font-family: 'Roboto Mono', monospace;
             font-size: 2rem;
             font-weight: 500;
@@ -133,11 +132,11 @@
             top: 0.2em;
         }
         
-        .start--display {
+        .start-time-display {
             font-family: 'Roboto Mono', monospace;
             font-size: 0.9rem;
             color: var(--text-dark);
-             white-space: nowrap;
+            white-space: nowrap;
         }
 
         .button-group {
@@ -208,17 +207,6 @@
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
         }
 
-        .lap-list-container::-webkit-scrollbar {
-            width: 6px;
-        }
-        .lap-list-container::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .lap-list-container::-webkit-scrollbar-thumb {
-            background-color: var(--secondary-color);
-            border-radius: 20px;
-        }
-
         .lap-item {
             display: flex;
             justify-content: space-between;
@@ -226,116 +214,67 @@
             padding: 0.25rem 1rem;
             border-bottom: 1px solid var(--border-color);
         }
-        .lap-item:last-child {
-            border-bottom: none;
-        }
-        
+
         .lap-label {
             color: var(--text-dark);
             font-size: 0.9rem;
             font-family: 'Roboto Mono', monospace;
         }
-        
-        .lap--display {
+
+        .lap-time-display {
             display: flex;
             align-items: flex-end;
             gap: 0.2rem;
             font-family: 'Roboto Mono', monospace;
         }
 
-        .lap--segment {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .lap--label {
-            font-size: 0.6rem;
-            color: var(--text-dark);
-            font-family: 'Inter', sans-serif;
-        }
-
-        .lap--value {
+        .lap-time-value {
             color: var(--text-light);
             font-size: 0.9rem;
-            line-height: 1;
-        }
-
-        .lap--separator {
-            font-size: 0.9rem;
-            position: relative;
-            top: 0.2em;
         }
 
         @media (max-width: 480px) {
             .stopwatch-container {
                 max-width: 100%;
-                gap: 0rem;
+                gap: 1rem;
             }
 
             .time-display-wrapper {
-                width: 80vw;
-                height: 50vw;
+                width: 95vw;
+                min-height: auto;
+                padding: 1rem 0.5rem;
             }
 
             .main-content {
-              display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1.5rem;
-    width: 100%;
-}
-                
-                gap: 1.5rem;
-                margin-top: 2.5rem;
+                gap: 0.8rem;
+                margin-top: 0 !important;
             }
 
             .time-value, .time-separator {
-                font-size: 1.2rem;
+                font-size: 1.4rem;
             }
             
             .time-label {
-                font-size: 0.7rem;
-            }
-
-            .start-time-display {
-                font-size: 0.7rem;
-                top: 1rem;
+                font-size: 0.65rem;
             }
 
             .btn {
-                width: 70px;
-                height: 40px;
-                font-size: 0.9rem;
-            }
-            
-            .btn-adaptive {
-                width: auto;
-                padding: 0 1rem;
-            }
-
-            .button-group {
-                gap: 1.5rem;
+                width: 75px;
+                height: 45px;
             }
 
             #lap-container-wrapper {
-                width: 80vw;
+                width: 95vw;
             }
         }
     </style>
 </head>
 <body>
 
-    <body>
-
     <div class="stopwatch-container">
-       
-        
         <div class="time-display-wrapper">
             <div class="main-content">
-                
                 <h1 class="text-gray-800 text-3xl font-bold text-center">Stoppuhr</h1>
-                
                 <div id="start-time-display" class="start-time-display">Start: -</div>
                 
                 <div id="time-display" class="time-display">
@@ -374,8 +313,7 @@
 
         <div id="lap-container-wrapper">
             <div class="lap-list-container">
-                <ul id="lap-list">
-                    </ul>
+                <ul id="lap-list"></ul>
             </div>
         </div>
     </div>
@@ -404,7 +342,6 @@
         let timerInterval;
         const STATE_KEY = 'stopwatch_state_new';
 
-        // Helper Functions
         const formatDuration = (timeInMs) => {
             const days = String(Math.floor(timeInMs / (1000 * 60 * 60 * 24))).padStart(2, '0');
             const hours = String(Math.floor((timeInMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
@@ -415,22 +352,14 @@
         };
 
         const saveState = () => {
-            try {
-                localStorage.setItem(STATE_KEY, JSON.stringify(localState));
-            } catch (error) {
-                console.error("Fehler beim Speichern im localStorage:", error);
-            }
+            try { localStorage.setItem(STATE_KEY, JSON.stringify(localState)); } catch (e) {}
         };
 
         const loadState = () => {
             try {
                 const savedState = localStorage.getItem(STATE_KEY);
-                if (savedState) {
-                    localState = JSON.parse(savedState);
-                }
-            } catch (error) {
-                console.error("Fehler beim Laden aus dem localStorage:", error);
-            }
+                if (savedState) localState = JSON.parse(savedState);
+            } catch (e) {}
         };
 
         const renderLaps = (laps) => {
@@ -442,41 +371,14 @@
                  lapItem.innerHTML = `
                     <span class="lap-label">Runde ${laps.length - index}</span>
                     <div class="lap-time-display">
-                        <div class="lap-time-segment">
-                            <span class="lap-time-label">TT</span>
-                            <span class="lap-time-value">${lap.days}</span>
-                        </div>
-                        <span class="lap-time-separator">:</span>
-                        <div class="lap-time-segment">
-                            <span class="lap-time-label">HH</span>
-                            <span class="lap-time-value">${lap.hours}</span>
-                        </div>
-                        <span class="lap-time-separator">:</span>
-                        <div class="lap-time-segment">
-                            <span class="lap-time-label">MM</span>
-                            <span class="lap-time-value">${lap.minutes}</span>
-                        </div>
-                        <span class="lap-time-separator">:</span>
-                        <div class="lap-time-segment">
-                            <span class="lap-time-label">SS</span>
-                            <span class="lap-time-value">${lap.seconds}</span>
-                        </div>
-                        <span class="lap-time-separator">:</span>
-                        <div class="lap-time-segment">
-                             <span class="lap-time-label">1/100s</span>
-                            <span class="lap-time-value">${lap.milliseconds}</span>
-                        </div>
-                    </div>
-                 `;
+                        <span class="lap-time-value">${lap.days}:${lap.hours}:${lap.minutes}:${lap.seconds}:${lap.milliseconds}</span>
+                    </div>`;
                  lapList.appendChild(lapItem);
              });
         };
 
         const updateUI = () => {
-            const totalTime = localState.isRunning 
-                ? Date.now() - localState.startTime 
-                : localState.totalTimeAtPause;
-            
+            const totalTime = localState.isRunning ? Date.now() - localState.startTime : localState.totalTimeAtPause;
             const { days, hours, minutes, seconds, milliseconds } = formatDuration(totalTime);
             daysVal.textContent = days;
             hoursVal.textContent = hours;
@@ -503,15 +405,10 @@
             renderLaps(localState.laps);
         };
 
-        // Event Handlers
         const handleStartStop = () => {
             localState.isRunning = !localState.isRunning;
             if (localState.isRunning) {
-                if (localState.totalTimeAtPause > 0) {
-                    localState.startTime = Date.now() - localState.totalTimeAtPause;
-                } else {
-                    localState.startTime = Date.now();
-                }
+                localState.startTime = localState.totalTimeAtPause > 0 ? Date.now() - localState.totalTimeAtPause : Date.now();
                 timerInterval = setInterval(updateUI, 10);
             } else {
                 localState.totalTimeAtPause = Date.now() - localState.startTime;
@@ -524,12 +421,8 @@
         const handleLapReset = () => {
             if (localState.isRunning) {
                 const currentTotalTimeMs = Date.now() - localState.startTime;
-                const lastLapTimestamp = localState.lapTimestamps.length > 0
-                    ? localState.lapTimestamps[localState.lapTimestamps.length - 1]
-                    : 0;
-                const lapTimeMs = currentTotalTimeMs - lastLapTimestamp;
-                
-                localState.laps.push(formatDuration(lapTimeMs));
+                const lastLapTimestamp = localState.lapTimestamps.length > 0 ? localState.lapTimestamps[localState.lapTimestamps.length - 1] : 0;
+                localState.laps.push(formatDuration(currentTotalTimeMs - lastLapTimestamp));
                 localState.lapTimestamps.push(currentTotalTimeMs);
             } else {
                 localState = { isRunning: false, startTime: 0, totalTimeAtPause: 0, lapTimestamps: [], laps: [] };
@@ -538,26 +431,14 @@
             updateUI();
         };
 
-        // Initialization
         startStopBtn.addEventListener('click', handleStartStop);
         lapResetBtn.addEventListener('click', handleLapReset);
         
         window.addEventListener('load', () => {
             loadState();
             updateUI();
-            if (localState.isRunning) {
-                timerInterval = setInterval(updateUI, 10);
-            }
+            if (localState.isRunning) timerInterval = setInterval(updateUI, 10);
         });
     </script>
 </body>
-
 </html>
-
-
-
-
-
-
-
-
