@@ -410,9 +410,14 @@
 
             if (localState.startTime > 0) {
                 const startDate = new Date(localState.startTime);
-                const dateString = startDate.toLocaleString('de-DE', { year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' });
-                const msString = String(startDate.getMilliseconds()).padStart(3, '0');
-                startTimeDisplay.textContent = `Start: ${dateString}.${msString}`;
+                const day = String(startDate.getDate()).padStart(2, '0');
+                const month = String(startDate.getMonth() + 1).padStart(2, '0');
+                const year = String(startDate.getFullYear()).slice(-2);
+                const h = String(startDate.getHours()).padStart(2, '0');
+                const m = String(startDate.getMinutes()).padStart(2, '0');
+                const s = String(startDate.getSeconds()).padStart(2, '0');
+                const ms = String(Math.floor(startDate.getMilliseconds() / 10)).padStart(2, '0');
+                startTimeDisplay.textContent = `Start: ${day}.${month}.${year}, ${h}:${m}:${s}:${ms}`;
             } else {
                 startTimeDisplay.textContent = 'Start: -';
             }
