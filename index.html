@@ -48,7 +48,6 @@
         }
 
         body {background-color: #C3EBFF;
-            /*background-color: var(--bg-color);*/
             font-family: 'Inter', sans-serif;
             color: var(--text-light);
             display: flex;
@@ -56,7 +55,7 @@
             justify-content: flex-start;
             align-items: center;
             min-height: 100vh;
-            padding: 1rem; /* Reduziert von 2rem */
+            padding: 1rem;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
@@ -152,35 +151,27 @@
             gap: 2rem;
         }
 
+        /* Einheitliche Button-Größe für alle Buttons */
         .btn {
-    width: 80px;
-    height: 50px;
-    border-radius: 1rem;
-    border: none;
-    background-color: var(--secondary-color);
-    color: var(--text-light);
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    box-shadow: inset 0 -4px 8px rgba(0,0,0,0.05), 0 4px 8px rgba(0,0,0,0.1);
-    /* NEU: Zentrierung sicherstellen */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 0; 
-}
+            width: 120px;
+            height: 50px;
+            border-radius: 1rem;
+            border: none;
+            background-color: var(--secondary-color);
+            color: var(--text-light);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: inset 0 -4px 8px rgba(0,0,0,0.05), 0 4px 8px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0; 
+        }
 
         .btn:hover {
             background-color: var(--secondary-color-darker);
-                   }
-        
-        .btn:active {
-                   }
-
-        .btn-adaptive {
-            width: auto;
-            padding: 0 1.5rem;
         }
 
         .btn-start {
@@ -241,53 +232,51 @@
         }
 
         @media (max-width: 480px) {
-    .stopwatch-container {
-        max-width: 100%;
-        gap: 1rem;
-    }
+            .stopwatch-container {
+                max-width: 100%;
+                gap: 1rem;
+            }
 
-    .time-display-wrapper {
-        /* Breite auf 80% der Bildschirmbreite reduziert */
-        width: 80vw;
-        min-height: auto;
-        padding: 1rem 0.5rem;
-        /* Verhindert, dass Inhalt die Box aufdrückt */
-        overflow: hidden; 
-    }
+            .time-display-wrapper {
+                width: 80vw;
+                min-height: auto;
+                padding: 1rem 0.5rem;
+                overflow: hidden; 
+            }
 
-    .main-content {
-        gap: 0.8rem;
-        margin-top: 0 !important;
-    }
+            .main-content {
+                gap: 0.8rem;
+                margin-top: 0 !important;
+            }
 
-    .time-display {
-        /* Erlaubt den Zahlen, bei Platzmangel kleiner zu werden */
-        flex-wrap: nowrap;
-        transform: scale(0.9); /* Skaliert die gesamte Zeitanzeige leicht runter */
-    }
+            .time-display {
+                flex-wrap: nowrap;
+                transform: scale(0.9);
+            }
 
-    .time-value, .time-separator {
-        font-size: 1.15rem; /* Schriftgröße weiter reduziert */
-    }
-    
-    .time-label {
-        font-size: 0.55rem;
-    }
+            .time-value, .time-separator {
+                font-size: 1.15rem;
+            }
+            
+            .time-label {
+                font-size: 0.55rem;
+            }
 
-    .btn {
-        width: 70px; /* Buttons minimal schmaler */
-        height: 42px;
-        font-size: 0.85rem;
-    }
+            /* Einheitliche Button-Größe auch auf Mobilgeräten */
+            .btn {
+                width: 100px;
+                height: 42px;
+                font-size: 0.85rem;
+            }
 
-    .button-group {
-        gap: 1rem; /* Abstand zwischen Buttons verringert */
-    }
+            .button-group {
+                gap: 1rem;
+            }
 
-    #lap-container-wrapper {
-        width: 80vw;
-    }
-}
+            #lap-container-wrapper {
+                width: 80vw;
+            }
+        }
     </style>
 </head>
 <body>
@@ -326,7 +315,7 @@
                 </div>
 
                 <div class="button-group">
-                    <button id="lap-reset-btn" class="btn btn-adaptive">Reset</button>
+                    <button id="lap-reset-btn" class="btn">Reset</button>
                     <button id="start-stop-btn" class="btn btn-start">Start</button>
                 </div>
             </div>
@@ -419,9 +408,14 @@
                 timeDisplayContainer.classList.remove('is-running');
             }
 
-            startTimeDisplay.textContent = localState.startTime > 0
-                ? `Start: ${new Date(localState.startTime).toLocaleString('de-DE', { year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}`
-                : 'Start: -';
+            if (localState.startTime > 0) {
+                const startDate = new Date(localState.startTime);
+                const dateString = startDate.toLocaleString('de-DE', { year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                const msString = String(startDate.getMilliseconds()).padStart(3, '0');
+                startTimeDisplay.textContent = `Start: ${dateString}.${msString}`;
+            } else {
+                startTimeDisplay.textContent = 'Start: -';
+            }
             
             renderLaps(localState.laps);
         };
@@ -463,18 +457,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
